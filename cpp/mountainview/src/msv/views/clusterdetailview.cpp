@@ -1417,7 +1417,7 @@ DiskReadMda mp_compute_templates(const QString& mlproxy_url, const QString& time
     TaskProgress task(TaskProgress::Calculate, "mp_compute_templates");
     task.log("mlproxy_url: " + mlproxy_url);
     MountainProcessRunner X;
-    QString processor_name = "compute_templates";
+    QString processor_name = "ms3.compute_templates";
     X.setProcessorName(processor_name);
 
     QMap<QString, QVariant> params;
@@ -1427,7 +1427,7 @@ DiskReadMda mp_compute_templates(const QString& mlproxy_url, const QString& time
     X.setInputParameters(params);
     X.setMLProxyUrl(mlproxy_url);
 
-    QString templates_fname = X.makeOutputFilePath("templates");
+    QString templates_fname = X.makeOutputFilePath("templates_out");
 
     task.log("X.compute()");
     X.runProcess();
@@ -1440,10 +1440,10 @@ DiskReadMda mp_compute_templates(const QString& mlproxy_url, const QString& time
 
 void mp_compute_templates_stdevs(DiskReadMda32& templates_out, DiskReadMda32& stdevs_out, const QString& mlproxy_url, const QString& timeseries, const QString& firings, int clip_size)
 {
-    TaskProgress task(TaskProgress::Calculate, "mp_compute_templates_stdevs");
+    TaskProgress task(TaskProgress::Calculate, "compute templates stdevs");
     task.log("mlproxy_url: " + mlproxy_url);
     MountainProcessRunner X;
-    QString processor_name = "mv_compute_templates";
+    QString processor_name = "ms3.mv_compute_templates";
     X.setProcessorName(processor_name);
 
     QMap<QString, QVariant> params;
@@ -1453,8 +1453,8 @@ void mp_compute_templates_stdevs(DiskReadMda32& templates_out, DiskReadMda32& st
     X.setInputParameters(params);
     X.setMLProxyUrl(mlproxy_url);
 
-    QString templates_fname = X.makeOutputFilePath("templates");
-    QString stdevs_fname = X.makeOutputFilePath("stdevs");
+    QString templates_fname = X.makeOutputFilePath("templates_out");
+    QString stdevs_fname = X.makeOutputFilePath("stdevs_out");
 
     task.log("X.compute()");
     X.runProcess();

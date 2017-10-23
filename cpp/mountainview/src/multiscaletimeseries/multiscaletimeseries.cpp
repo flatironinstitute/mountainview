@@ -98,7 +98,7 @@ void MultiScaleTimeSeries::initialize()
     MountainProcessRunner MPR;
     QString path_out;
     {
-        MPR.setProcessorName("create_multiscale_timeseries");
+        MPR.setProcessorName("ms3.create_multiscale_timeseries");
         QVariantMap params;
         params["timeseries"] = path;
         MPR.setInputParameters(params);
