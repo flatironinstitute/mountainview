@@ -501,7 +501,7 @@ void MVSpikeSprayComputer::compute()
     QString clips_path;
     {
         MountainProcessRunner MT;
-        QString processor_name = "extract_clips";
+        QString processor_name = "ms3.mv_extract_clips";
         MT.setProcessorName(processor_name);
 
         QMap<QString, QVariant> params;
@@ -511,7 +511,7 @@ void MVSpikeSprayComputer::compute()
         MT.setInputParameters(params);
         MT.setMLProxyUrl(mlproxy_url);
 
-        clips_path = MT.makeOutputFilePath("clips");
+        clips_path = MT.makeOutputFilePath("clips_out");
 
         MT.runProcess();
         if (MLUtil::threadInterruptRequested()) {
