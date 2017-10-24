@@ -496,7 +496,7 @@ void MVClusterWidgetComputer::compute()
         }
 
         MountainProcessRunner MT;
-        QString processor_name = "mv_subfirings";
+        QString processor_name = "ms3.mv_subfirings";
         MT.setProcessorName(processor_name);
 
         task.log(QString("firings = %1").arg(firings.makePath()));
