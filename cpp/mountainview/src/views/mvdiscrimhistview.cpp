@@ -21,7 +21,7 @@ public:
     DiskReadMda32 timeseries;
     DiskReadMda firings;
     QList<int> cluster_numbers;
-    QString method;
+    //QString method;
 
     //output
     QList<DiscrimHistogram> histograms;
@@ -61,7 +61,7 @@ MVDiscrimHistView::MVDiscrimHistView(MVAbstractContext* context)
     this->recalculateOn(context, SIGNAL(clusterMergeChanged()), true);
     this->recalculateOn(context, SIGNAL(clusterVisibilityChanged()), true);
     this->recalculateOn(context, SIGNAL(viewMergedChanged()), true);
-    this->recalculateOnOptionChanged("discrim_hist_method", true);
+    //this->recalculateOnOptionChanged("discrim_hist_method", true);
 
     this->recalculate();
 }
@@ -86,7 +86,7 @@ void MVDiscrimHistView::prepareCalculation()
     d->m_computer.timeseries = c->currentTimeseries();
     d->m_computer.firings = c->firings();
     d->m_computer.cluster_numbers = d->m_cluster_numbers;
-    d->m_computer.method = c->option("discrim_hist_method").toString();
+    //d->m_computer.method = c->option("discrim_hist_method").toString();
 }
 
 void MVDiscrimHistView::runCalculation()
@@ -146,7 +146,7 @@ void MVDiscrimHistViewComputer::compute()
 
     MountainProcessRunner MPR;
     MPR.setMLProxyUrl(mlproxy_url);
-    MPR.setProcessorName("mv_discrimhist");
+    MPR.setProcessorName("ms3.mv_discrimhist");
 
     QStringList clusters_strlist;
     foreach (int cluster, cluster_numbers) {
@@ -157,7 +157,7 @@ void MVDiscrimHistViewComputer::compute()
     params["timeseries"] = timeseries.makePath();
     params["firings"] = firings.makePath();
     params["clusters"] = clusters_strlist.join(",");
-    params["method"] = method;
+    //params["method"] = method;
     MPR.setInputParameters(params);
 
     QString output_path = MPR.makeOutputFilePath("output");

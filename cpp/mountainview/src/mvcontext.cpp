@@ -1390,5 +1390,5 @@ void MVContextPrivate::set_default_options()
     q->setOption("cc_bin_size_msec", 0.5);
     q->setOption("cc_max_est_data_size", "1e4");
     q->setOption("amp_thresh_display", 3);
-    q->setOption("discrim_hist_method", "centroid");
+    //q->setOption("discrim_hist_method", "centroid");
 }

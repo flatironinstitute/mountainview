@@ -520,7 +520,7 @@ void MVClusterWidgetComputer::compute()
     QString features_path;
     if (features_mode == "pca") {
         MountainProcessRunner MT;
-        QString processor_name = "extract_clips_features";
+        QString processor_name = "ms3.mv_extract_clips_features";
         MT.setProcessorName(processor_name);
 
         QMap<QString, QVariant> params;
@@ -533,7 +533,7 @@ void MVClusterWidgetComputer::compute()
         //MT.setMscmdServerUrl(mscmdserver_url);
         MT.setMLProxyUrl(mlproxy_url);
 
-        features_path = MT.makeOutputFilePath("features");
+        features_path = MT.makeOutputFilePath("features_out");
 
         MT.runProcess();
 

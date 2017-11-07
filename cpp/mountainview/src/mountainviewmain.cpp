@@ -923,7 +923,7 @@ void setup_main_window(MVMainWindow* W)
     W->registerViewFactory(new MVSelectedCrossCorrelogramsFactory(W));
     W->registerViewFactory(new MVTimeSeriesDataFactory(W));
     W->registerViewFactory(new MVPCAFeaturesFactory(W));
-    W->registerViewFactory(new MVChannelFeaturesFactory(W));
+    //W->registerViewFactory(new MVChannelFeaturesFactory(W));
     W->registerViewFactory(new MVSpikeSprayFactory(W));
     W->registerViewFactory(new MVFiringEventsFactory(W));
     //W->registerViewFactory(new MVAmplitudeHistogramsFactory(W));
