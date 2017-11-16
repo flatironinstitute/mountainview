@@ -362,6 +362,11 @@ int main(int argc, char* argv[])
                 dc.addTimeseries("Raw Data", DiskReadMda32(raw_path));
                 dc.setCurrentTimeseriesName("Raw Data");
             }
+            if (CLP.named_parameters.contains("timeseries")) { //synonym for "raw"
+                QString raw_path = CLP.named_parameters["timeseries"].toString();
+                dc.addTimeseries("Raw Data", DiskReadMda32(raw_path));
+                dc.setCurrentTimeseriesName("Raw Data");
+            }
             if (CLP.named_parameters.contains("filt")) {
                 QString filt_path = CLP.named_parameters["filt"].toString();
                 dc.addTimeseries("Filtered Data", DiskReadMda32(filt_path));
