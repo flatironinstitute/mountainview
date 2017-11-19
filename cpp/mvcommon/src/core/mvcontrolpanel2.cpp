@@ -5,7 +5,9 @@
 *******************************************************/
 
 #include "mvcontrolpanel2.h"
-#include "qAccordion/qaccordion.h"
+//#include "qAccordion/qaccordion.h"
+#include "toolbox.h"
+#include <QHBoxLayout>
 
 #include <QPushButton>
 //#include "mlcommon.h"
@@ -14,7 +16,7 @@
 class MVControlPanel2Private {
 public:
     MVControlPanel2* q;
-    QAccordion* m_accordion;
+    ToolBox* m_accordion;
     QList<MVAbstractControl*> m_controls;
     MVAbstractContext* m_context;
     MVMainWindow* m_main_window;
@@ -42,18 +44,18 @@ MVControlPanel2::MVControlPanel2(MVAbstractContext* context, MVMainWindow* mw)
         QObject::connect(B, SIGNAL(clicked(bool)), this, SLOT(slot_recalc_all()));
     }
 
-    d->m_accordion = new QAccordion;
-    d->m_accordion->setMultiActive(true);
+    d->m_accordion = new ToolBox;
+//    d->m_accordion->setMultiActive(true);
 
-    QScrollArea* SA = new QScrollArea;
-    SA->setWidget(d->m_accordion);
-    SA->setWidgetResizable(true);
+//    QScrollArea* SA = new QScrollArea;
+//    SA->setWidget(d->m_accordion);
+//    SA->setWidgetResizable(true);
 
     QVBoxLayout* vlayout = new QVBoxLayout;
     vlayout->setSpacing(0);
     vlayout->setMargin(0);
     vlayout->addLayout(top_layout);
-    vlayout->addWidget(SA);
+    vlayout->addWidget(d->m_accordion);
     this->setLayout(vlayout);
 }
 
@@ -69,18 +71,19 @@ void MVControlPanel2::insertControl(int position, MVAbstractControl* mvcontrol, 
     else
         d->m_controls.insert(position, mvcontrol);
 
-    QFrame* frame = new QFrame;
-    QHBoxLayout* frame_layout = new QHBoxLayout;
-    frame_layout->addWidget(mvcontrol);
-    frame->setLayout(frame_layout);
-    ContentPane* CP = new ContentPane(mvcontrol->title(), frame);
-    CP->setMaximumHeight(1000);
-    if (position < 0)
-        d->m_accordion->addContentPane(CP);
-    else
-        d->m_accordion->insertContentPane(position, CP);
+//    QFrame* frame = new QFrame;
+//    QHBoxLayout* frame_layout = new QHBoxLayout;
+//    frame_layout->addWidget(mvcontrol);
+//    frame->setLayout(frame_layout);
+//    ContentPane* CP = new ContentPane(mvcontrol->title(), frame);
+//    CP->setMaximumHeight(1000);
+    if (position < 0) {
+        d->m_accordion->addWidget(mvcontrol, mvcontrol->title());
+    } else
+        d->m_accordion->insertWidget(position, mvcontrol, mvcontrol->title());
     if (start_open) {
-        CP->openContentPane();
+        d->m_accordion->open(d->m_accordion->indexOf(mvcontrol));
+        //CP->openContentPane();
     }
     mvcontrol->updateControls();
     mvcontrol->updateContext(); //do this so the default values get passed on to the context

@@ -52,11 +52,4 @@ mvabstractcontext.cpp mvmainwindow.cpp
 DISTFILES += \
     ../mvcommon.pri
 
-INCLUDEPATH += ../3rdparty/qaccordion/include
-VPATH += ../3rdparty/qaccordion/include
-VPATH += ../3rdparty/qaccordion/src
-HEADERS += qAccordion/qaccordion.h qAccordion/contentpane.h qAccordion/clickableframe.h
-SOURCES += qaccordion.cpp contentpane.cpp clickableframe.cpp
-
-RESOURCES += mvcommon.qrc \
-    ../3rdparty/qaccordion/icons/qaccordionicons.qrc
+RESOURCES += mvcommon.qrc
