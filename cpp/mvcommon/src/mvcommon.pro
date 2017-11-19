@@ -15,8 +15,10 @@ TEMPLATE = lib
 
 INCLUDEPATH += ../include
 VPATH += ../include
-HEADERS += prvmanagerdialog.h resolveprvsdialog.h
-SOURCES += prvmanagerdialog.cpp resolveprvsdialog.cpp
+HEADERS += prvmanagerdialog.h resolveprvsdialog.h \
+    ../include/toolbox.h
+SOURCES += prvmanagerdialog.cpp resolveprvsdialog.cpp \
+    toolbox.cpp
 
 FORMS += prvmanagerdialog.ui resolveprvsdialog.ui
 
