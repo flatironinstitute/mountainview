@@ -44,7 +44,8 @@ public:
 
     MVMainWindow* mainWindow();
 
-    virtual MVAbstractView* createView(MVAbstractContext* context) = 0;
+    virtual MVAbstractView* createView(MVAbstractContext* context) {(void)context; return 0;}
+    virtual MVAbstractView* createView(MVAbstractContext* context, const QJsonObject &data) {(void)context; (void)data; return 0;}
     virtual QList<QAction*> actions(const QMimeData& md);
 signals:
 

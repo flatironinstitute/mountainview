@@ -70,6 +70,7 @@ public:
 
     //Manage views
     void openView(const QString& id);
+    void openView(const QString& id, const QJsonObject &data);
     void setCurrentContainerName(const QString& name);
     void closeAllViews();
     QList<MVAbstractView*> allViews();

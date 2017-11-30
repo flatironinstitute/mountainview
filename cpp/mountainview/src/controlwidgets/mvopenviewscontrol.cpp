@@ -71,17 +71,19 @@ MVOpenViewsControl::MVOpenViewsControl(MVAbstractContext* context, MVMainWindow*
 
     QList<MVAbstractViewFactory*> factories = mw->viewFactories();
     foreach (MVAbstractViewFactory* f, factories) {
-        QToolButton* button = new QToolButton;
-        QFont font = button->font();
-        font.setPixelSize(14);
-        button->setFont(font);
-        button->setText(f->name());
-        button->setProperty("action_name", f->id());
-        d->m_flow_layout->addWidget(button);
-        d->m_viewMapper->setMapping(button, f);
-        QObject::connect(button, SIGNAL(clicked()), d->m_viewMapper, SLOT(map()));
-        //QObject::connect(f, SIGNAL(enabledChanged(bool)), button, SLOT(setEnabled(bool)));
-        d->m_buttons[f->name()] = button;
+        if (!f->name().isEmpty()) {
+            QToolButton* button = new QToolButton;
+            QFont font = button->font();
+            font.setPixelSize(14);
+            button->setFont(font);
+            button->setText(f->name());
+            button->setProperty("action_name", f->id());
+            d->m_flow_layout->addWidget(button);
+            d->m_viewMapper->setMapping(button, f);
+            QObject::connect(button, SIGNAL(clicked()), d->m_viewMapper, SLOT(map()));
+            //QObject::connect(f, SIGNAL(enabledChanged(bool)), button, SLOT(setEnabled(bool)));
+            d->m_buttons[f->name()] = button;
+        }
     }
 
     {

@@ -42,7 +42,17 @@ public:
     QString title() const Q_DECL_OVERRIDE;
     MVAbstractView* createView(MVAbstractContext* context) Q_DECL_OVERRIDE;
 private slots:
-    //void openClipsForTemplate();
+};
+
+class StaticClusterDetailFactory : public MVAbstractViewFactory {
+    Q_OBJECT
+public:
+    StaticClusterDetailFactory(MVMainWindow* mw, QObject* parent = 0);
+    QString id() const Q_DECL_OVERRIDE;
+    QString name() const Q_DECL_OVERRIDE;
+    QString title() const Q_DECL_OVERRIDE;
+    MVAbstractView* createView(MVAbstractContext* context, const QJsonObject &data) Q_DECL_OVERRIDE;
+private slots:
 };
 
 #endif // CLUSTERDETAILPLUGIN_H

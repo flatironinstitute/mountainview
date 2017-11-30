@@ -507,16 +507,24 @@ int main(int argc, char* argv[])
         a.processEvents();
 
         printf("Opening initial views...\n");
-        if (context->firings().N2() > 1) {
+        if (CLP.named_parameters.contains("templates")) {
             W->setCurrentContainerName("north");
-            W->openView("open-cluster-details");
-            W->setCurrentContainerName("south");
-            //W->openView("open-auto-correlograms");
-            W->openView("open-cluster-metrics");
+            QJsonObject data0;
+            data0["templates"] = CLP.named_parameters["templates"].toString();
+            W->openView("static-cluster-details", data0);
         }
-        else if (context->currentTimeseries().N2() > 1) {
-            W->setCurrentContainerName("south");
-            W->openView("open-timeseries-data");
+        else {
+            if (context->firings().N2() > 1) {
+                W->setCurrentContainerName("north");
+                W->openView("open-cluster-details");
+                W->setCurrentContainerName("south");
+                //W->openView("open-auto-correlograms");
+                W->openView("open-cluster-metrics");
+            }
+            else if (context->currentTimeseries().N2() > 1) {
+                W->setCurrentContainerName("south");
+                W->openView("open-timeseries-data");
+            }
         }
 
         printf("Starting event loop...\n");

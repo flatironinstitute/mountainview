@@ -20,6 +20,7 @@
 #include "diskreadmda.h"
 #include "mda.h"
 #include <QWidget>
+#include <mda32.h>
 #include "mvabstractview.h"
 
 /** \class ClusterDetailView
@@ -42,13 +43,15 @@ public:
     void runCalculation() Q_DECL_OVERRIDE;
     void onCalculationFinished() Q_DECL_OVERRIDE;
 
+    void setStaticData(const Mda32 &templates, const Mda32 &template_stdevs);
+
     void zoomAllTheWayOut();
 
     ///Create an image of the current view
     QImage renderImage(int W = 0, int H = 0);
 
-    QJsonObject exportStaticView() Q_DECL_OVERRIDE;
-    void loadStaticView(const QJsonObject& X) Q_DECL_OVERRIDE;
+    //QJsonObject exportStaticView() Q_DECL_OVERRIDE;
+    //void loadStaticView(const QJsonObject& X) Q_DECL_OVERRIDE;
 
 protected:
     void leaveEvent(QEvent*);
@@ -72,7 +75,7 @@ private slots:
     void slot_zoom_out();
     void slot_vertical_zoom_in();
     void slot_vertical_zoom_out();
-    void slot_export_static_view();
+    //void slot_export_static_view();
     void slot_update_sort_order();
     void slot_view_properties();
     void slot_export_template_waveforms();

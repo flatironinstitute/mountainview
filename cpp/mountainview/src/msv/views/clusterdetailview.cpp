@@ -58,6 +58,7 @@ struct ClusterData {
     Mda32 template0;
     Mda32 stdev0;
     int num_events = 0;
+    bool debug_printed = false;
 
     QJsonObject toJsonObject();
     void fromJsonObject(const QJsonObject& X);
@@ -76,6 +77,9 @@ public:
     QString mlproxy_url;
     DiskReadMda32 timeseries;
     DiskReadMda firings;
+    bool using_static_data;
+    DiskReadMda32 static_templates;
+    DiskReadMda32 static_template_stdevs;
     int clip_size;
     QSet<int> clusters_to_force_show;
 
@@ -83,10 +87,6 @@ public:
     QList<ClusterData> cluster_data;
 
     virtual void compute();
-
-    bool loaded_from_static_output = false;
-    QJsonObject exportStaticOutput();
-    void loadStaticOutput(const QJsonObject& X);
 };
 
 class ClusterDetailView;
@@ -139,6 +139,10 @@ public:
     ClusterDetailView* q;
 
     QList<ClusterData> m_cluster_data;
+
+    bool m_using_static_data = false;
+    Mda32 m_static_templates;
+    Mda32 m_static_template_stdevs;
 
     double m_vscale_factor;
     double m_space_ratio;
@@ -290,14 +294,18 @@ void ClusterDetailView::prepareCalculation()
     MVContext* c = qobject_cast<MVContext*>(mvContext());
     Q_ASSERT(c);
 
-    if (!d->m_calculator.loaded_from_static_output) {
+    //if (!d->m_calculator.loaded_from_static_output) {
         d->compute_total_time();
-    }
+    //}
     d->m_calculator.mlproxy_url = c->mlProxyUrl();
     d->m_calculator.timeseries = c->currentTimeseries();
     d->m_calculator.firings = c->firings();
+    d->m_calculator.using_static_data = d->m_using_static_data;
+    d->m_calculator.static_templates = d->m_static_templates;
+    d->m_calculator.static_template_stdevs = d->m_static_template_stdevs;
     d->m_calculator.clip_size = c->option("clip_size", 100).toInt();
     d->m_calculator.clusters_to_force_show = c->clustersToForceShow().toSet();
+
     update();
 }
 
@@ -342,6 +350,13 @@ void ClusterDetailView::onCalculationFinished()
     this->update();
 }
 
+void ClusterDetailView::setStaticData(const Mda32 &templates, const Mda32 &template_stdevs)
+{
+    d->m_using_static_data = true;
+    d->m_static_templates = templates;
+    d->m_static_template_stdevs = template_stdevs;
+}
+
 void ClusterDetailView::zoomAllTheWayOut()
 {
     d->m_space_ratio = 0;
@@ -372,6 +387,7 @@ QImage ClusterDetailView::renderImage(int W, int H)
     return ret;
 }
 
+/*
 QJsonObject ClusterDetailView::exportStaticView()
 {
     QJsonObject ret = MVAbstractView::exportStaticView();
@@ -400,6 +416,7 @@ void ClusterDetailView::loadStaticView(const QJsonObject& X)
     d->m_stdev_shading = info["stdev_shading"].toBool();
     this->recalculate();
 }
+*/
 
 void ClusterDetailView::leaveEvent(QEvent*)
 {
@@ -692,6 +709,7 @@ void ClusterDetailView::slot_vertical_zoom_out()
     update();
 }
 
+/*
 void ClusterDetailView::slot_export_static_view()
 {
     //QSettings settings("SCDA", "MountainView");
@@ -708,6 +726,7 @@ void ClusterDetailView::slot_export_static_view()
         qWarning() << "Unable to write file: " + fname;
     }
 }
+*/
 
 void ClusterDetailView::slot_update_sort_order()
 {
@@ -1090,6 +1109,17 @@ void ClusterDetailViewPrivate::do_paint(QPainter& painter, int W_in, int H_in, b
     for (int i = 0; i < cluster_data_merged.count(); i++) {
         ClusterData CD = cluster_data_merged[i];
         if (c->clusterIsVisible(CD.k)) {
+            // Witold, something bad is happening. If I don't include the following line (which I was using for debugging),
+            // then the CD.template0 data ends up evaluating to zero.
+            // I think this reflects a problem in Mda32, and perhaps the copy constructor, or something
+            // (may or may not help: I think some Mda32 was created in a separate thread.)
+            if (i==0) {
+                if (!m_cluster_data[i].debug_printed) {
+                    qDebug()  << "--------------------------------------" << CD.template0.value(0) << m_cluster_data[i].template0.value(0);
+                    m_cluster_data[i].debug_printed=true;
+                }
+            }
+
             ClusterView* V = new ClusterView(q, this);
             V->setStdevShading(m_stdev_shading);
             V->setHighlighted(CD.k == c->currentCluster());
@@ -1484,23 +1514,25 @@ void mp_compute_templates_stdevs(DiskReadMda32& templates_out, DiskReadMda32& st
 void ClusterDetailViewCalculator::compute()
 {
     TaskProgress task(TaskProgress::Calculate, "Cluster Detail");
-    if (this->loaded_from_static_output) {
-        task.log("Loaded from static output");
-        return;
-    }
+    //if (this->loaded_from_static_output) {
+    //    task.log("Loaded from static output");
+    //    return;
+    //}
 
     QTime timer;
     timer.start();
     task.setProgress(0.1);
 
-    int M = timeseries.N1();
+
     //int N = timeseries.N2();
     int L = firings.N2();
-    int T = clip_size;
 
     QVector<double> times;
     QVector<int> channels, labels;
     QVector<double> peaks;
+
+    if (using_static_data)
+        task.log(QString("Using static data (templates: %1 x %2 x %3)").arg(static_templates.N1()).arg(static_templates.N2()).arg(static_templates.N3()));
 
     task.log("Setting up times/channels/labels/peaks");
     task.setProgress(0.2);
@@ -1520,10 +1552,6 @@ void ClusterDetailViewCalculator::compute()
 
     task.setLabel("Computing templates");
     task.setProgress(0.4);
-    int K = 0;
-    for (int i = 0; i < L; i++)
-        if (labels[i] > K)
-            K = labels[i];
 
     QString timeseries_path = timeseries.makePath();
     QString firings_path = firings.makePath();
@@ -1536,10 +1564,32 @@ void ClusterDetailViewCalculator::compute()
     task.setProgress(0.6);
     //DiskReadMda templates0 = mp_compute_templates(mlproxy_url, timeseries_path, firings_path, T);
     DiskReadMda32 templates0, stdevs0;
-    mp_compute_templates_stdevs(templates0, stdevs0, mlproxy_url, timeseries_path, firings_path, T);
+    int M,T,K;
+    if (using_static_data) {
+        templates0 = static_templates;
+        stdevs0 = static_template_stdevs;
+        M=templates0.N1();
+        T=templates0.N2();
+        K=templates0.N3();
+    }
+    else {
+        M = timeseries.N1();
+        T = clip_size;
+        K = 0;
+        for (int i = 0; i < L; i++)
+            if (labels[i] > K)
+                K = labels[i];
+        mp_compute_templates_stdevs(templates0, stdevs0, mlproxy_url, timeseries_path, firings_path, T);
+    }
     if (MLUtil::threadInterruptRequested()) {
         task.error("Halted **");
         return;
+    }
+
+    if (!L) {
+        for (int k=1; k <= K; k++) {
+            clusters_to_force_show.insert(k);
+        }
     }
 
     task.setLabel("Setting cluster data");
@@ -1570,8 +1620,13 @@ void ClusterDetailViewCalculator::compute()
             qWarning() << "Unable to read chunk of templates in cluster detail view";
             return;
         }
-        if (!stdevs0.readChunk(CD.stdev0, 0, 0, k - 1, M, T, 1)) {
-            qWarning() << "Unable to read chunk of stdevs in cluster detail view";
+        if (stdevs0.N2()>1) {
+            if (!stdevs0.readChunk(CD.stdev0, 0, 0, k - 1, M, T, 1)) {
+                qWarning() << "Unable to read chunk of stdevs in cluster detail view";
+            }
+        }
+        else {
+            CD.stdev0.allocate(CD.template0.N1(),CD.template0.N2());
         }
         if (!MLUtil::threadInterruptRequested()) {
             if ((CD.num_events > 0) || (clusters_to_force_show.contains(k))) {
@@ -1579,32 +1634,6 @@ void ClusterDetailViewCalculator::compute()
             }
         }
     }
-}
-
-QJsonObject ClusterDetailViewCalculator::exportStaticOutput()
-{
-    QJsonObject ret;
-    ret["version"] = "ClusterDetailViewCalculator-0.1";
-
-    QJsonArray cd_list;
-    for (int i = 0; i < cluster_data.count(); i++) {
-        QJsonObject cd = cluster_data[i].toJsonObject();
-        cd_list.push_back(cd);
-    }
-    ret["cluster_data"] = cd_list;
-    return ret;
-}
-
-void ClusterDetailViewCalculator::loadStaticOutput(const QJsonObject& X)
-{
-    cluster_data.clear();
-    QJsonArray cd_list = X["cluster_data"].toArray();
-    for (int i = 0; i < cd_list.count(); i++) {
-        ClusterData CD;
-        CD.fromJsonObject(cd_list[i].toObject());
-        cluster_data << CD;
-    }
-    loaded_from_static_output = true;
 }
 
 ClusterView::ClusterView(ClusterDetailView* q0, ClusterDetailViewPrivate* d0)

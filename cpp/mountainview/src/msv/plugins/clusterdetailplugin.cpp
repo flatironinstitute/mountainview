@@ -17,6 +17,8 @@
 #include "clusterdetailplugin.h"
 
 #include <clusterdetailview.h>
+#include <mda32.h>
+#include <QJsonDocument>
 
 class ClusterDetailPluginPrivate {
 public:
@@ -47,7 +49,10 @@ QString ClusterDetailPlugin::description()
 void ClusterDetailPlugin::initialize(MVMainWindow* mw)
 {
     mw->registerViewFactory(new ClusterDetailFactory(mw));
+    mw->registerViewFactory(new StaticClusterDetailFactory(mw));
 }
+
+////////////////////////////////////////////////////////////////////////////////////////
 
 ClusterDetailFactory::ClusterDetailFactory(MVMainWindow* mw, QObject* parent)
     : MVAbstractViewFactory(mw, parent)
@@ -72,5 +77,43 @@ QString ClusterDetailFactory::title() const
 MVAbstractView* ClusterDetailFactory::createView(MVAbstractContext* context)
 {
     ClusterDetailView* X = new ClusterDetailView(context);
+    return X;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+StaticClusterDetailFactory::StaticClusterDetailFactory(MVMainWindow* mw, QObject* parent)
+    : MVAbstractViewFactory(mw, parent)
+{
+}
+
+QString StaticClusterDetailFactory::id() const
+{
+    return QStringLiteral("static-cluster-details");
+}
+
+QString StaticClusterDetailFactory::name() const
+{
+    return "";
+}
+
+QString StaticClusterDetailFactory::title() const
+{
+    return tr("Detail");
+}
+
+MVAbstractView* StaticClusterDetailFactory::createView(MVAbstractContext* context, const QJsonObject &data)
+{
+    qDebug() << __FILE__ << __LINE__ << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << QJsonDocument(data).toJson();
+    QString templates_path=data["templates"].toString();
+    QString template_stdevs_path=data["template_stdevs"].toString();
+    Mda32 templates(templates_path);
+    Mda32 template_stdevs;
+    if (!template_stdevs_path.isEmpty()) {
+        template_stdevs.read(template_stdevs_path);
+    }
+    qDebug() << __FILE__ << __LINE__ << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << templates.N1() << templates.N2();
+    ClusterDetailView* X = new ClusterDetailView(context);
+    X->setStaticData(templates,template_stdevs);
     return X;
 }

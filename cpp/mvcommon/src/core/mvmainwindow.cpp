@@ -87,6 +87,7 @@ public:
 
     MVAbstractViewFactory* viewFactoryById(const QString& id) const;
     MVAbstractView* openView(MVAbstractViewFactory* factory);
+    MVAbstractView* openView(MVAbstractViewFactory* factory, const QJsonObject &data);
 
     //ClustercurationGuide* m_cluster_curation_guide;
     //GuideV1* m_guide_v1;
@@ -384,7 +385,16 @@ void MVMainWindow::openView(const QString& id)
     if (f)
         d->openView(f);
     else
-        qWarning() << "Unknow view factory: " + id;
+        qWarning() << "Unknown view factory: " + id;
+}
+
+void MVMainWindow::openView(const QString& id, const QJsonObject &data)
+{
+    MVAbstractViewFactory* f = d->viewFactoryById(id);
+    if (f)
+        d->openView(f, data);
+    else
+        qWarning() << "Unknown view factory: " + id;
 }
 
 void MVMainWindow::recalculateViews(RecalculateViewsMode mode)
@@ -512,6 +522,22 @@ MVAbstractViewFactory* MVMainWindowPrivate::viewFactoryById(const QString& id) c
 MVAbstractView* MVMainWindowPrivate::openView(MVAbstractViewFactory* factory)
 {
     MVAbstractView* view = factory->createView(m_context);
+    if (!view)
+        return Q_NULLPTR;
+    //    set_tool_button_menu(view);
+    /// TODO: don't pass label as argument to add_tab (think about it)
+    view->setTitle(factory->title());
+    add_tab(view, factory->title(), factory->preferredOpenLocation());
+
+    QObject::connect(view, SIGNAL(contextMenuRequested(QMimeData, QPoint)),
+        q, SLOT(handleContextMenu(QMimeData, QPoint)));
+
+    return view;
+}
+
+MVAbstractView* MVMainWindowPrivate::openView(MVAbstractViewFactory* factory, const QJsonObject &data)
+{
+    MVAbstractView* view = factory->createView(m_context, data);
     if (!view)
         return Q_NULLPTR;
     //    set_tool_button_menu(view);
