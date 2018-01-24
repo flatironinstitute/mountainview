@@ -841,6 +841,28 @@ void MVContext::loadClusterMetricsFromFile(QString csv_or_json_file_path)
     }
 }
 
+QJsonObject MVContext::getClusterMetricsObject()
+{
+    QJsonArray clusters;
+    QList<int> keys=this->clusterAttributesKeys();
+    foreach (int key, keys) {
+        QJsonObject obj=this->clusterAttributes(key);
+        QJsonObject metrics0=obj["metrics"].toObject();
+        QJsonObject C;
+        C["metrics"]=metrics0;
+        QSet<QString> tags_set=this->clusterTags(key);
+        QJsonObject tags0;
+        foreach (QString tag, tags_set) {
+            tags0[tag]=true;
+        }
+        C["tags"]=tags0;
+        clusters.push_back(C);
+    }
+    QJsonObject X;
+    X["clusters"]=clusters;
+    return X;
+}
+
 void MVContext::loadClusterPairMetricsFromFile(QString csv_file_path)
 {
     QStringList lines = TextFile::read(csv_file_path).split("\n", QString::SkipEmptyParts);
@@ -865,6 +887,8 @@ void MVContext::loadClusterPairMetricsFromFile(QString csv_file_path)
         }
     }
 }
+
+
 
 QSet<int> MVContext::clustersSubset() const
 {

@@ -68,6 +68,11 @@ MVExportControl::MVExportControl(MVAbstractContext* context, MVMainWindow* mw)
         connect(B, SIGNAL(clicked(bool)), this, SLOT(slot_export_curated_firings()));
         flayout->addWidget(B);
     }
+    {
+        QPushButton* B = new QPushButton("Export cluster metrics file");
+        connect(B, SIGNAL(clicked(bool)), this, SLOT(slot_export_cluster_metrics_file()));
+        flayout->addWidget(B);
+    }
     /*
     {
         QPushButton* B = new QPushButton("Open PRV manager");
@@ -207,6 +212,32 @@ void MVExportControl::slot_export_mv2_document()
     }
     else {
         task.error("Error writing .mv2 file: " + fname);
+    }
+}
+
+void MVExportControl::slot_export_cluster_metrics_file()
+{
+    MVContext* c = qobject_cast<MVContext*>(mvContext());
+    Q_ASSERT(c);
+
+    //QSettings settings("SCDA", "MountainView");
+    //QString default_dir = settings.value("default_export_dir", "").toString();
+    QString default_dir = QDir::currentPath();
+    QString fname = QFileDialog::getSaveFileName(this, "Export cluster metrics file", default_dir, "*.json");
+    if (fname.isEmpty())
+        return;
+    //settings.setValue("default_export_dir", QFileInfo(fname).path());
+    if (QFileInfo(fname).suffix() != "json")
+        fname = fname + ".json";
+    TaskProgress task("export cluster metrics file");
+    task.log() << "Writing: " + fname;
+    QJsonObject obj = c->getClusterMetricsObject();
+    QString json = QJsonDocument(obj).toJson();
+    if (TextFile::write(fname, json)) {
+        task.log() << QString("Wrote %1 kilobytes").arg(json.count() * 1.0 / 1000);
+    }
+    else {
+        task.error("Error writing cluster metrics file: " + fname);
     }
 }
 

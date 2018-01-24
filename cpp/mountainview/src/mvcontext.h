@@ -147,6 +147,8 @@ public:
     void loadClusterMetricsFromFile(QString csv_or_json_file_path);
     void loadClusterPairMetricsFromFile(QString csv_file_path);
 
+    QJsonObject getClusterMetricsObject();
+
     /////////////////////////////////////////////////
     QSet<int> clustersSubset() const;
     void setClustersSubset(const QSet<int>& clusters_subset);
