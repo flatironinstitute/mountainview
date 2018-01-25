@@ -849,6 +849,7 @@ QJsonObject MVContext::getClusterMetricsObject()
         QJsonObject obj=this->clusterAttributes(key);
         QJsonObject metrics0=obj["metrics"].toObject();
         QJsonObject C;
+        C["label"] = key;
         C["metrics"]=metrics0;
         QSet<QString> tags_set=this->clusterTags(key);
         QJsonArray tags0;
