@@ -1,3 +1,9 @@
+mountainview (0.12) xenial; urgency=medium
+
+  * export cluster metrics file (with tags)
+
+ -- Jeremy Magland <jmagland@simonsfoundation.org>  Wed, 24 Jan 2018 16:09:29 -0500
+
 mountainview (0.11-beta3) xenial; urgency=medium
 
   * Add --templates capability
