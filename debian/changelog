@@ -1,3 +1,9 @@
+mountainview (0.14) xenial; urgency=medium
+
+  * fix problem in exporting cluster metrics
+
+ -- Jeremy Magland <jmagland@simonsfoundation.org>  Thu, 25 Jan 2018 14:52:23 -0500
+
 mountainview (0.13) xenial; urgency=medium
 
   * fix tag export issue
