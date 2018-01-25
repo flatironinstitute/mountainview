@@ -851,9 +851,9 @@ QJsonObject MVContext::getClusterMetricsObject()
         QJsonObject C;
         C["metrics"]=metrics0;
         QSet<QString> tags_set=this->clusterTags(key);
-        QJsonObject tags0;
+        QJsonArray tags0;
         foreach (QString tag, tags_set) {
-            tags0[tag]=true;
+            tags0.push_back(tag);
         }
         C["tags"]=tags0;
         clusters.push_back(C);
