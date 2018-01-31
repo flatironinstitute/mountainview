@@ -156,6 +156,27 @@ void Tabber::popOutWidget(MVAbstractView* W)
     d->put_widget_in_container("", W);
 }
 
+MVAbstractView *Tabber::currentView() const
+{
+    if (!d->m_current_container_name.isEmpty()) {
+        TabberTabWidget *tabWidget = d->m_tab_widgets.value(d->m_current_container_name, nullptr);
+        return tabWidget->view(tabWidget->currentIndex());
+    }
+    qWarning() << "Current view not available";
+    return nullptr;
+}
+
+void Tabber::closeView(MVAbstractView *view)
+{
+    if (d->contains_widget(view)) { // I think this condition is important so we don't delete the same widget twice if the user requests close twice
+        TabberWidget* X = d->find_tabber_widget(view);
+        if (X) {
+            delete X->frame;
+            d->remove_widget(view);
+        }
+    }
+}
+
 void Tabber::slot_tab_close_requested(int index)
 {
     Q_UNUSED(index)

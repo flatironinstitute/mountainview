@@ -115,6 +115,16 @@ MVMainWindow::MVMainWindow(MVAbstractContext* context, QWidget* parent)
     d->m_context = context;
 
     QToolBar* main_toolbar = new QToolBar;
+    QAction *a = new QAction(this);
+    a->setShortcut(QKeySequence::Close); // Ctrl+W
+    a->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    connect(a, &QAction::triggered, [this]() {
+       MVAbstractView *view = d->m_tabber->currentView();
+       if (view) {
+           d->m_tabber->closeView(view);
+       }
+    });
+    addAction(a);
 
     /*
     d->m_cluster_curation_guide = new ClustercurationGuide(d->m_context, this);
@@ -254,9 +264,6 @@ MVMainWindow::MVMainWindow(MVAbstractContext* context, QWidget* parent)
     QFont fnt = this->font();
     fnt.setPointSize(12);
     this->setFont(fnt);
-
-    QShortcut* closeWindowShortcut = new QShortcut(QKeySequence("Ctrl+W"), this, SLOT(close()));
-    Q_UNUSED(closeWindowShortcut)
 }
 
 MVMainWindow::~MVMainWindow()
