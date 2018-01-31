@@ -59,6 +59,7 @@ public:
     void setActiveClusterNumbers(const QSet<int>& A);
 
     QImage renderImage(int W, int H);
+    void scaleView(double factor);
 signals:
     void currentEventChanged();
     void transformationChanged();
@@ -76,6 +77,7 @@ protected:
     void mousePressEvent(QMouseEvent* evt);
     void mouseReleaseEvent(QMouseEvent* evt);
     void wheelEvent(QWheelEvent* evt);
+    void keyPressEvent(QKeyEvent *evt);
     void resizeEvent(QResizeEvent* evt);
 
 private:
