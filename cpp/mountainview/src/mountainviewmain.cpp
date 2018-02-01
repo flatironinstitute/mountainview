@@ -362,6 +362,14 @@ int main(int argc, char* argv[])
             }
             if (CLP.named_parameters.contains("firings")) {
                 QString firings_path = CLP.named_parameters["firings"].toString();
+                QFileInfo firingsInfo(firings_path);
+                if (!firingsInfo.exists()) {
+                    QMessageBox::critical(W, "Error",
+                        QString("Firings file '%1' does not exist. "
+                                "Program cannot continue.").arg(firings_path));
+                    delete W;
+                    return -1;
+                }
                 dc.setFirings(DiskReadMda(firings_path));
                 W->setWindowTitle(firings_path);
             }
