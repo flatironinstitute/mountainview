@@ -96,5 +96,6 @@ MVAbstractView* ClipsViewFactory::createView(MVAbstractContext* context)
     Q_ASSERT(c);
     MVClipsWidget* X = new MVClipsWidget(c);
     X->setLabelsToUse(c->selectedClusters());
+    X->setTitle(title()+" ("+c->selectedClustersRangeText()+")");
     return X;
 }

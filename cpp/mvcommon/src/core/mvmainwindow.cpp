@@ -526,8 +526,11 @@ MVAbstractView* MVMainWindowPrivate::openView(MVAbstractViewFactory* factory)
         return Q_NULLPTR;
     //    set_tool_button_menu(view);
     /// TODO: don't pass label as argument to add_tab (think about it)
-    view->setTitle(factory->title());
-    add_tab(view, factory->title(), factory->preferredOpenLocation());
+    QString title = view->title();
+    if (title.isEmpty()) {
+        view->setTitle(factory->title());
+    }
+    add_tab(view, view->title(), factory->preferredOpenLocation());
 
     QObject::connect(view, SIGNAL(contextMenuRequested(QMimeData, QPoint)),
         q, SLOT(handleContextMenu(QMimeData, QPoint)));

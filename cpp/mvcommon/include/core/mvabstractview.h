@@ -44,8 +44,8 @@ public:
     void suggestRecalculate();
     void stopCalculation();
 
-    QString title() const;
-    void setTitle(const QString& title);
+    virtual QString title() const;
+    virtual void setTitle(const QString& title);
 
     QString calculatingMessage() const;
 
@@ -54,14 +54,13 @@ public:
 
     QList<QWidget*> toolbarControls();
 
+    virtual MVAbstractViewFactory* viewFactory() const;
+    MVAbstractContext* mvContext();
+    virtual ViewFeatures viewFeatures() const;
+
 public slots:
     void recalculate();
     void neverSuggestRecalculate();
-
-    virtual MVAbstractViewFactory* viewFactory() const;
-    MVAbstractContext* mvContext();
-
-    virtual ViewFeatures viewFeatures() const;
     virtual void renderView(QPainter* painter); // add render opts
 
 signals:

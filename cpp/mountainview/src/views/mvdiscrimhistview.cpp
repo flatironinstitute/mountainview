@@ -334,6 +334,7 @@ MVAbstractView* MVDiscrimHistFactory::createView(MVAbstractContext* context)
     Q_ASSERT(c);
 
     MVDiscrimHistView* X = new MVDiscrimHistView(context);
+    X->setTitle(title()+" ("+c->selectedClustersRangeText()+")");
     QList<int> ks = c->selectedClusters();
     if (ks.isEmpty())
         ks = c->clusterVisibilityRule().subset.toList();

@@ -156,7 +156,8 @@ public:
     /////////////////////////////////////////////////
     MVEvent currentEvent() const;
     int currentCluster() const;
-    QList<int> selectedClusters() const;
+    const QList<int> &selectedClusters() const;
+    QString selectedClustersRangeText() const;
     double currentTimepoint() const;
     MVRange currentTimeRange() const;
     void setCurrentEvent(const MVEvent& evt);

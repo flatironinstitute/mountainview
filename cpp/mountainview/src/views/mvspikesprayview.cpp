@@ -590,6 +590,7 @@ MVAbstractView* MVSpikeSprayFactory::createView(MVAbstractContext* context)
         return Q_NULLPTR;
     }
     MVSpikeSprayView* X = new MVSpikeSprayView(context);
+    X->setTitle(title()+" ("+c->selectedClustersRangeText()+")");
     X->setLabelsToUse(ks.toSet());
     return X;
 }

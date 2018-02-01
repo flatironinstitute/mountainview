@@ -388,6 +388,7 @@ MVAbstractView* MVFiringEventsFactory::createView(MVAbstractContext* context)
         return Q_NULLPTR;
     }
     MVFiringEventView2* X = new MVFiringEventView2(c);
+    X->setTitle(title()+" ("+c->selectedClustersRangeText()+")");
     X->setLabelsToUse(ks.toSet());
     X->setNumTimepoints(c->currentTimeseries().N2());
     return X;

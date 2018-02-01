@@ -608,6 +608,7 @@ MVAbstractView* MVSelectedAutoCorrelogramsFactory::createView(MVAbstractContext*
 
     MVCrossCorrelogramsWidget3* X = new MVCrossCorrelogramsWidget3(context);
     QList<int> ks = c->selectedClusters();
+    X->setTitle(title()+" ("+c->selectedClustersRangeText()+")");
     if (ks.isEmpty())
         ks = c->clusterVisibilityRule().subset.toList();
     qSort(ks);
@@ -740,6 +741,7 @@ MVAbstractView* MVMatrixOfCrossCorrelogramsFactory::createView(MVAbstractContext
     Q_ASSERT(c);
 
     MVCrossCorrelogramsWidget3* X = new MVCrossCorrelogramsWidget3(context);
+    X->setTitle(title()+" ("+c->selectedClustersRangeText()+")");
     QList<int> ks = c->selectedClusters();
     if (ks.isEmpty())
         ks = c->clusterVisibilityRule().subset.toList();
