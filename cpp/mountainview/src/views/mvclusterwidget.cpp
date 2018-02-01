@@ -642,6 +642,8 @@ MVAbstractView* MVPCAFeaturesFactory::createView(MVAbstractContext* context)
         return Q_NULLPTR;
     }
     MVClusterWidget* X = new MVClusterWidget(context);
+    X->setTitle(title()+" ("+c->selectedClustersRangeText()+")");
+
     X->setLabelsToUse(ks);
     X->setFeatureMode("pca");
     return X;

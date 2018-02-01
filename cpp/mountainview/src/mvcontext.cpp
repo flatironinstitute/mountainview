@@ -357,9 +357,51 @@ int MVContext::currentCluster() const
     return d->m_current_cluster;
 }
 
-QList<int> MVContext::selectedClusters() const
+const QList<int>& MVContext::selectedClusters() const
 {
     return d->m_selected_clusters;
+}
+
+QString MVContext::selectedClustersRangeText() const
+{
+    QList<int> ks = selectedClusters();
+    if (ks.isEmpty()) {
+        ks = clusterVisibilityRule().subset.toList();
+    };
+    qSort(ks);
+    QString selectionText;
+    struct Range {
+        int from;
+        int to;
+        Range(int f, int t) : from(f), to(t){}
+        bool extend(int nt) {
+            if (nt == to + 1) {
+                to = nt;
+                return true;
+            }
+            return false;
+        }
+        QString toString() const {
+            if (from == to) {
+                return QString::number(from);
+            }
+            return QString("%1-%2").arg(from).arg(to);
+        }
+    };
+    QList<Range> ranges;
+    foreach(int k, ks) {
+        if (ranges.isEmpty()) {
+            ranges << Range(k, k);
+        } else if (!ranges.last().extend(k)) {
+            ranges << Range(k, k);
+        }
+    }
+    QStringList texts;
+    foreach(const Range &r, ranges) {
+        texts.append(r.toString());
+    }
+    selectionText = texts.join(",");
+    return selectionText;
 }
 
 double MVContext::currentTimepoint() const

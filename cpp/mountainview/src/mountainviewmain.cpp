@@ -13,66 +13,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <QApplication>
 #include <QDebug>
-#include <qdatetime.h>
-#include <QFile>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QProcess>
-#include <QStringList>
-#include <resolveprvsdialog.h>
-#include "cachemanager.h"
-
-#include "clusterdetailplugin.h"
-//#include "isolationmatrixplugin.h"
-
-#include "usagetracking.h"
-#include "mda.h"
 #include <QDesktopServices>
 #include <QDesktopWidget>
 #include <QDir>
-#include <QImageWriter>
-#include "histogramview.h"
-#include "mvmainwindow.h"
-#include "mvclusterwidget.h"
-#include "closemehandler.h"
-#include "remotereadmda.h"
-#include "taskprogress.h"
-//#include "mvtimeseriesview.h" //for unit test
-
+#include <QFile>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <QHBoxLayout>
+#include <QImageWriter>
 #include <QJsonDocument>
+#include <QMessageBox>
+#include <QProcess>
 #include <QRunnable>
-#include <QThreadPool>
+#include <QSettings>
+#include <QStringList>
 #include <QtConcurrentRun>
+#include <QThreadPool>
+
+#include <clipsviewplugin.h>
+#include <clustercontextmenuhandler.h>
 #include <clustercontextmenuplugin.h>
-//#include <firetrackview.h>
+#include <clustermetricsplugin.h>
+#include <curationprogramplugin.h>
+#include <diskreadmda32.h>
+#include <icounter.h>
 #include <mvamphistview3.h>
 #include <mvclipswidget.h>
-#include <clustercontextmenuhandler.h>
-//#include <clusterpaircontextmenuhandler.h>
 #include <mvcrosscorrelogramswidget3.h>
 #include <mvdiscrimhistview.h>
-#include <qprocessmanager.h>
-//#include <mvdiscrimhistview_guide.h>
 #include <mvfiringeventview2.h>
 #include <mvmergecontrol.h>
 #include <mvspikesprayview.h>
 #include <mvtemplatesview2.h>
 #include <mvtemplatesview3.h>
 #include <mvtimeseriesview2.h>
-#include <tabber.h>
-#include <QFileDialog>
-#include <QSettings>
-#include <clipsviewplugin.h>
-#include <diskreadmda32.h>
-//#include <mvclusterordercontrol.h>
-#include <clustermetricsplugin.h>
-#include <curationprogramplugin.h>
-//#include "prvgui.h"
 #include <objectregistry.h>
-#include <icounter.h>
+#include <qdatetime.h>
+#include <qprocessmanager.h>
+#include <resolveprvsdialog.h>
+#include <tabber.h>
+
+#include "cachemanager.h"
+#include "closemehandler.h"
+#include "clusterdetailplugin.h"
+#include "histogramview.h"
+#include "mda.h"
+#include "mvclusterwidget.h"
+#include "mvmainwindow.h"
+#include "remotereadmda.h"
+#include "taskprogress.h"
+#include "usagetracking.h"
 
 /// TODO (LOW) option to turn on/off 8-bit quantization per view
 /// TODO: (HIGH) blobs for populations

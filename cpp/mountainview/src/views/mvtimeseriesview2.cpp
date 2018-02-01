@@ -327,6 +327,7 @@ MVAbstractView* MVTimeSeriesDataFactory::createView(MVAbstractContext* context)
     Q_ASSERT(c);
 
     MVTimeSeriesView2* X = new MVTimeSeriesView2(context);
+    X->setTitle(title()+" ("+c->selectedClustersRangeText()+")");
     QList<int> ks = c->selectedClusters();
     X->setLabelsToView(ks.toSet());
     return X;
