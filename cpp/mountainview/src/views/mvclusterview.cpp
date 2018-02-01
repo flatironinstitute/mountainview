@@ -93,7 +93,7 @@ MVClusterView::MVClusterView(MVAbstractContext* context, QWidget* parent)
 {
     d = new MVClusterViewPrivate;
     d->q = this;
-
+    setFocusPolicy(Qt::WheelFocus);
     MVContext* c = qobject_cast<MVContext*>(context);
     Q_ASSERT(c);
 
@@ -411,12 +411,31 @@ void MVClusterView::wheelEvent(QWheelEvent* evt)
         factor = 1 / 1.1;
     }
     if (delta != 1) {
-        d->m_transformation.scale(factor, factor, factor);
-        d->m_data_trans_needed = true;
-        d->m_grid_update_needed = true;
-        d->schedule_emit_transformation_changed();
-        update();
+        scaleView(factor);
     }
+}
+
+void MVClusterView::keyPressEvent(QKeyEvent *evt)
+{
+    if (evt->key() == Qt::Key_Plus) {
+        scaleView(1.1);
+        return;
+    }
+    if (evt->key() == Qt::Key_Minus) {
+        scaleView(1.0/1.1);
+        return;
+    }
+    evt->ignore();
+}
+
+void MVClusterView::scaleView(double factor)
+{
+    if (factor == 1) return;
+    d->m_transformation.scale(factor, factor, factor);
+    d->m_data_trans_needed = true;
+    d->m_grid_update_needed = true;
+    d->schedule_emit_transformation_changed();
+    update();
 }
 
 void MVClusterView::resizeEvent(QResizeEvent* evt)
