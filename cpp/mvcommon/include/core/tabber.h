@@ -49,6 +49,8 @@ public:
 
     void moveWidgetToOtherContainer(MVAbstractView* W);
     void popOutWidget(MVAbstractView* W);
+    MVAbstractView* currentView() const;
+    void closeView(MVAbstractView*);
 signals:
     void widgetsChanged();
 private slots:
