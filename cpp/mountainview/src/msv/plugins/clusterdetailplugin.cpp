@@ -104,7 +104,6 @@ QString StaticClusterDetailFactory::title() const
 
 MVAbstractView* StaticClusterDetailFactory::createView(MVAbstractContext* context, const QJsonObject &data)
 {
-    qDebug() << __FILE__ << __LINE__ << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << QJsonDocument(data).toJson();
     QString templates_path=data["templates"].toString();
     QString template_stdevs_path=data["template_stdevs"].toString();
     Mda32 templates(templates_path);
@@ -112,7 +111,6 @@ MVAbstractView* StaticClusterDetailFactory::createView(MVAbstractContext* contex
     if (!template_stdevs_path.isEmpty()) {
         template_stdevs.read(template_stdevs_path);
     }
-    qDebug() << __FILE__ << __LINE__ << "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << templates.N1() << templates.N2();
     ClusterDetailView* X = new ClusterDetailView(context);
     X->setStaticData(templates,template_stdevs);
     return X;
